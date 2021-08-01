@@ -1,0 +1,36 @@
+{
+  "name": "koa",
+  "version": "1.0.0",
+  "description": "jenkins构建",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MDGE/koa.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MDGE/koa/issues"
+  },
+  "homepage": "https://github.com/MDGE/koa#readme",
+  "dependencies": {
+    "@koa/cors": "^3.1.0",
+    "axios": "^0.21.0",
+    "ejs": "^3.1.6",
+    "koa": "^2.13.0",
+    "koa-bodyparser": "^4.3.0",
+    "koa-html-render": "^1.0.3",
+    "koa-router": "^9.4.0",
+    "koa-views": "^7.0.1",
+    "mysql": "^2.18.1",
+    "nodemon": "^2.0.7",
+    "static-resource-plugin": "^1.0.6"
+  },
+  "devDependencies": {
+    "koa-static": "^5.0.0"
+  }
+}

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body{
+            padding: 0;
+            margin:0
+        }
+        table{
+            width: 400px;
+            margin: 0 auto;
+            text-align: center;
+            border-collapse: collapse;
+            perspective: 1000px;
+        }
+        tr{
+            height: 32px;
+            margin-top: 2px;
+            cursor: pointer;
+        }
+        tr:nth-child(odd){
+            background: #90e6fc;
+        }
+        tr:nth-child(even){
+            background: #f56d6d;
+        }
+        
+    </style>
+</head>
+<body>
+    <div id="root">
+
+
+        
+    </div>
+    <div>
+        <button onclick="down(1)">下载</button>
+        <button onclick="down(2)">预览</button>
+        <button onclick="jump()">其他界面</button>
+    </div>
+    <script>
+        function jump(){
+            window.open("http://localhost:7001/other")   
+        }
+        function findId(id){
+            window.open(`/id/${id}`)
+        }
+        function appendHtml(arr){
+            let html = `<table><tr><th>姓名</th><th>性别</th></tr>`
+            JSON.parse(arr).forEach((item)=>{
+                return html+=`<tr><td onclick="findId(${item.s_id})">${item.s_name}</td><td>${item.s_sex}</td></tr>`
+            })
+            html+=`</table>`
+            document.querySelector('#root').innerHTML = html
+        }
+        function down(type){
+            let xhr = new XMLHttpRequest()
+            xhr.open('get','http://localhost:7001/download')
+            xhr.setRequestHeader('Content-Type', 'application/json'); 
+            xhr.responseType='blob' 
+            xhr.send()
+            xhr.onreadystatechange = function(){
+                if(xhr.readyState == 4 && xhr.status == 200){
+                    if(type === 1){
+                        const reader = new FileReader()
+                        console.log(xhr.response)
+                        reader.readAsDataURL(xhr.response) 
+                        reader.onload = (e)=>{
+                            const a = document.createElement('a') 
+                            a.target = '_blank'  
+                            a.setAttribute("href", e.target.result );
+                            a.setAttribute("class", 'downa' );
+                            document.body.appendChild(a)  
+                            a.click() 
+                            document.getElementsByClassName('downa')[0].remove()
+                        }
+                    }else if(type === 2){
+                        console.log(xhr.response,1111)
+                        let blob = new Blob([xhr.response],{
+                            type: 'application/pdf;chartset=UTF-8'
+                        })
+                        let fileURL = URL.createObjectURL(blob);
+                        window.open(fileURL)
+                        URL.revokeObjectURL(url);
+                    }
+                }
+            }
+        }
+        
+        window.onload = function(){
+            let xhr = new XMLHttpRequest()
+            xhr.open('get','http://localhost:7001/info')
+            xhr.send()
+            xhr.onreadystatechange = function(){
+                if(xhr.readyState == 4 && xhr.status == 200){
+                    appendHtml(xhr.response)
+                }
+            }
+            
+        }
+        
+    </script>
+</body>
+</html>

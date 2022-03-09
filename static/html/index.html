@@ -32,75 +32,89 @@
 </head>
 <body>
     <div id="root">
+        <p>map对应DictionaryProperties是字典   properties是NameDictionary  这个对象shishi就是慢对象，注意浏览器可以使用memory收集来观测window/file上观察</p>
 
+        <p>map对应fastProperties  properties是propertyArray 快对象  做了优化没有突破v8限制(添加属性的数量)即便是添加属性的时候她仍然是propertyArray </p>
+    
+        <p>v8对象的inobject elements是快属性，properties是慢属性，不完全是只有突破v8 限制的时候才会变成 NameDictionary</p>
+    
+        <p>慢对象是读取慢，但是更改快，快对象是读和修改都快 </p>    
+    
+        <p>快数组 FixedArray 慢数组 HashTable</p>
+    
+        <p>快数组可以扩容，扩容到原来数组3倍后就变成慢数组</p>
+    
+        <p>索引差了1024会导致快数组直接变为慢数组</p>
+    
+        <p>慢数组想变成快数组：1.慢数组可以放到即将申请的快数组中2.对于新数组而言操作节省50%的空间</p>
 
         
     </div>
-    <div>
+    <!-- <div>
         <button onclick="down(1)">下载</button>
         <button onclick="down(2)">预览</button>
         <button onclick="jump()">其他界面</button>
-    </div>
+    </div> -->
     <script>
-        function jump(){
-            window.open("http://localhost:7001/other")   
-        }
-        function findId(id){
-            window.open(`/id/${id}`)
-        }
-        function appendHtml(arr){
-            let html = `<table><tr><th>姓名</th><th>性别</th></tr>`
-            JSON.parse(arr).forEach((item)=>{
-                return html+=`<tr><td onclick="findId(${item.s_id})">${item.s_name}</td><td>${item.s_sex}</td></tr>`
-            })
-            html+=`</table>`
-            document.querySelector('#root').innerHTML = html
-        }
-        function down(type){
-            let xhr = new XMLHttpRequest()
-            xhr.open('get','http://localhost:7001/download')
-            xhr.setRequestHeader('Content-Type', 'application/json'); 
-            xhr.responseType='blob' 
-            xhr.send()
-            xhr.onreadystatechange = function(){
-                if(xhr.readyState == 4 && xhr.status == 200){
-                    if(type === 1){
-                        const reader = new FileReader()
-                        console.log(xhr.response)
-                        reader.readAsDataURL(xhr.response) 
-                        reader.onload = (e)=>{
-                            const a = document.createElement('a') 
-                            a.target = '_blank'  
-                            a.setAttribute("href", e.target.result );
-                            a.setAttribute("class", 'downa' );
-                            document.body.appendChild(a)  
-                            a.click() 
-                            document.getElementsByClassName('downa')[0].remove()
-                        }
-                    }else if(type === 2){
-                        console.log(xhr.response,1111)
-                        let blob = new Blob([xhr.response],{
-                            type: 'application/pdf;chartset=UTF-8'
-                        })
-                        let fileURL = URL.createObjectURL(blob);
-                        window.open(fileURL)
-                        URL.revokeObjectURL(url);
-                    }
-                }
-            }
-        }
+        // function jump(){
+        //     window.open("http://localhost:7001/other")   
+        // }
+        // function findId(id){
+        //     window.open(`/id/${id}`)
+        // }
+        // function appendHtml(arr){
+        //     let html = `<table><tr><th>姓名</th><th>性别</th></tr>`
+        //     JSON.parse(arr).forEach((item)=>{
+        //         return html+=`<tr><td onclick="findId(${item.s_id})">${item.s_name}</td><td>${item.s_sex}</td></tr>`
+        //     })
+        //     html+=`</table>`
+        //     document.querySelector('#root').innerHTML = html
+        // }
+        // function down(type){
+        //     let xhr = new XMLHttpRequest()
+        //     xhr.open('get','http://localhost:7001/download')
+        //     xhr.setRequestHeader('Content-Type', 'application/json'); 
+        //     xhr.responseType='blob' 
+        //     xhr.send()
+        //     xhr.onreadystatechange = function(){
+        //         if(xhr.readyState == 4 && xhr.status == 200){
+        //             if(type === 1){
+        //                 const reader = new FileReader()
+        //                 console.log(xhr.response)
+        //                 reader.readAsDataURL(xhr.response) 
+        //                 reader.onload = (e)=>{
+        //                     const a = document.createElement('a') 
+        //                     a.target = '_blank'  
+        //                     a.setAttribute("href", e.target.result );
+        //                     a.setAttribute("class", 'downa' );
+        //                     document.body.appendChild(a)  
+        //                     a.click() 
+        //                     document.getElementsByClassName('downa')[0].remove()
+        //                 }
+        //             }else if(type === 2){
+        //                 console.log(xhr.response,1111)
+        //                 let blob = new Blob([xhr.response],{
+        //                     type: 'application/pdf;chartset=UTF-8'
+        //                 })
+        //                 let fileURL = URL.createObjectURL(blob);
+        //                 window.open(fileURL)
+        //                 URL.revokeObjectURL(url);
+        //             }
+        //         }
+        //     }
+        // }
         
-        window.onload = function(){
-            let xhr = new XMLHttpRequest()
-            xhr.open('get','http://localhost:7001/info')
-            xhr.send()
-            xhr.onreadystatechange = function(){
-                if(xhr.readyState == 4 && xhr.status == 200){
-                    appendHtml(xhr.response)
-                }
-            }
+        // window.onload = function(){
+        //     let xhr = new XMLHttpRequest()
+        //     xhr.open('get','http://localhost:7001/info')
+        //     xhr.send()
+        //     xhr.onreadystatechange = function(){
+        //         if(xhr.readyState == 4 && xhr.status == 200){
+        //             appendHtml(xhr.response)
+        //         }
+        //     }
             
-        }
+        // }
         
     </script>
 </body>

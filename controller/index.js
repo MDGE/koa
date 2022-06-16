@@ -52,7 +52,7 @@ router.get('/all',async (ctx)=>{
 router.get('/download',async (ctx)=>{
   const pathUrl = path.join(__dirname, '/小白.pdf');
   // ctx.set('Content-disposition', 'attachment; filename=' + '1.pdf');
-  // ctx.set('Content-type', 'application/pdf');
+  ctx.set('Content-type', 'application/pdf');
   ctx.body = fs.createReadStream(pathUrl)
 
 })
